@@ -3,7 +3,6 @@ require "cacheable/caches"
 require "cacheable/keys"
 require "cacheable/expiry"
 require "cacheable/model_fetch"
-require "cacheable/railtie"
 require 'active_support/concern'
 
 module Cacheable
@@ -36,3 +35,5 @@ module Cacheable
     end
   end
 end
+
+::ActiveRecord::Base.send(:include, Cacheable)
