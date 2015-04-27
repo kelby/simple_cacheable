@@ -4,23 +4,22 @@ require "cacheable/keys"
 require "cacheable/expiry"
 require "cacheable/model_fetch"
 require "cacheable/railtie"
+require 'active_support/concern'
 
 module Cacheable
+  extend ::ActiveSupport::Concern
   extend ModelFetch
 
-  def self.included(base)
-    base.extend(Cacheable::Caches)
-    base.send :include, Cacheable::Keys
-    base.send :include, Cacheable::Expiry
-    base.send :extend,  ClassMethods
+  included do
+    extend  Cacheable::Caches
+    include Cacheable::Keys
+    include Cacheable::Expiry
 
-    base.class_eval do
-      class_attribute   :cached_key,
-                        :cached_indices,
-                        :cached_methods,
-                        :cached_class_methods,
-                        :cached_associations
-    end
+    class_attribute   :cached_key,
+                      :cached_indices,
+                      :cached_methods,
+                      :cached_class_methods,
+                      :cached_associations
   end
 
   def self.escape_punctuation(string)
@@ -36,5 +35,4 @@ module Cacheable
       instance_exec &block
     end
   end
-
 end
